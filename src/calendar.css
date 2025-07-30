@@ -1,0 +1,111 @@
+/* calendar.css */
+
+/* Ensure mobile responsiveness */
+@media (max-width: 640px) {
+    .react-calendar {
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .react-calendar__tile {
+        padding: 0.5rem 0;
+        font-size: 0.85rem;
+    }
+
+    .react-calendar__navigation__label {
+        font-size: 1rem;
+    }
+}
+
+/* Base calendar tile */
+.react-calendar__tile {
+    aspect-ratio: 1 / 1;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    color: #e5e7eb;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Today */
+.react-calendar__tile--now {
+    background-color: #2563eb !important;
+    color: white !important;
+    border-radius: 9999px;
+    font-weight: 600;
+}
+
+/* Selected Date */
+.react-calendar__tile--active {
+    background-color: #eab308 !important;
+    color: black !important;
+    border-radius: 9999px;
+    font-weight: bold;
+    box-shadow: 0 0 8px #facc15;
+    transform: scale(1.05);
+}
+
+/* Reservation Dates – green dot indicator */
+.highlighted-date::after {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    margin: 0 auto;
+    margin-top: 4px;
+    background-color: #22c55e;
+    border-radius: 50%;
+}
+
+/* Hover effect */
+.react-calendar__tile:enabled:hover {
+    background-color: #4b5563;
+    color: white;
+    transform: scale(1.05);
+    border-radius: 9999px;
+}
+
+/* Weekday label styling */
+.react-calendar__month-view__weekdays {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* Container padding for spacing */
+.react-calendar {
+    background-color: #1f2937;
+    border: none;
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation buttons */
+.react-calendar__navigation button {
+    color: #facc15;
+    background: transparent;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.react-calendar__navigation button:disabled {
+    color: #6b7280;
+}
+
+/* Month/Year header */
+.react-calendar__navigation__label {
+    font-size: 1.25rem;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* Hide the border on active navigation buttons */
+.react-calendar__navigation button:focus {
+    outline: none;
+    box-shadow: none;
+}
