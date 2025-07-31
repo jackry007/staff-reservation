@@ -141,7 +141,6 @@ function App() {
     </div>
   );
 }
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -151,24 +150,32 @@ function Login() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-xl mb-4 font-semibold">Admin Login</h2>
-      <input
-        className="border p-2 w-full mb-2"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        className="border p-2 w-full mb-4"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={login} className="bg-blue-600 text-white px-4 py-2 rounded">
-        Login
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
+      <div className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">Admin Login</h2>
+        <div className="space-y-4">
+          <input
+            className="bg-gray-700 text-white border border-gray-600 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+          />
+          <input
+            className="bg-gray-700 text-white border border-gray-600 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            onClick={login}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 w-full rounded transition duration-200"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
