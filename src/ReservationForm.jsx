@@ -76,7 +76,7 @@ const ReservationForm = ({ selectedDate, refresh }) => {
 
     return (
         <div className="mt-4">
-            {/* <h3 className="text-xl font-semibold mb-3 text-white">Add Reservation</h3> */}
+            <h3 className="text-xl font-semibold mb-3 text-white">Add Reservation</h3>
 
             {error && (
                 <p className="text-red-500 mb-2 font-medium">
