@@ -14,6 +14,7 @@ function isPastYMD(ymd) {
   return ymd < toLocalYMD(new Date());
 }
 
+<<<<<<< Updated upstream
 const normalizePhone = (value) => value.replace(/[^\d]/g, "").slice(0, 10);
 
 const EditModal = ({ reservation, close, refresh }) => {
@@ -21,10 +22,18 @@ const EditModal = ({ reservation, close, refresh }) => {
   const [phone, setPhone] = useState(reservation?.phone || "");
   const [size, setSize] = useState(Number(reservation?.size) || 1);
   const [time, setTime] = useState(reservation?.time || ""); // NEW (optional)
+=======
+const EditModal = ({ reservation, close, refresh }) => {
+  const [name, setName] = useState(reservation?.name ?? "");
+  const [phone, setPhone] = useState(reservation?.phone ?? "");
+  const [size, setSize] = useState(Number(reservation?.size ?? 1));
+  const [time, setTime] = useState(reservation?.time ?? ""); // optional
+>>>>>>> Stashed changes
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+<<<<<<< Updated upstream
   const dateYMD = reservation?.date; // should already be YYYY-MM-DD in DB
 
   const locked = useMemo(() => {
@@ -38,17 +47,47 @@ const EditModal = ({ reservation, close, refresh }) => {
     if (size < 1) return false;
     return true;
   }, [locked, name, size]);
+=======
+  const dateYMD = reservation?.date; // DB value like "2026-01-15"
+
+  // Lock ONLY past dates; today + future is editable
+  const locked = useMemo(() => {
+    if (!dateYMD) return false;
+    return isPastYMD(dateYMD);
+  }, [dateYMD]);
+
+  const canSave = useMemo(() => {
+    if (locked || saving) return false;
+    if (!name.trim()) return false;
+    if (!Number.isFinite(size) || size < 1) return false;
+    return true;
+  }, [locked, saving, name, size]);
+>>>>>>> Stashed changes
 
   // Close on ESC
   useEffect(() => {
     const onKeyDown = (e) => {
       if (e.key === "Escape") close();
+<<<<<<< Updated upstream
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [close]);
 
   // Prevent background scroll while modal open
+=======
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (canSave) handleSave();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [close, canSave]);
+
+  // Prevent background scroll
+>>>>>>> Stashed changes
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -85,8 +124,13 @@ const EditModal = ({ reservation, close, refresh }) => {
         name: cleanedName,
         phone: cleanedPhone,
         size: cleanedSize,
+<<<<<<< Updated upstream
         time: time || null, // keep null if empty
         date: reservation.date, // unchanged
+=======
+        time: time ? time : null, // store null if empty
+        date: reservation.date, // keep same date
+>>>>>>> Stashed changes
       })
       .eq("id", reservation.id);
 
@@ -108,7 +152,11 @@ const EditModal = ({ reservation, close, refresh }) => {
       aria-modal="true"
       aria-label="Edit reservation"
       onMouseDown={(e) => {
+<<<<<<< Updated upstream
         // Click outside closes
+=======
+        // click outside closes
+>>>>>>> Stashed changes
         if (e.target === e.currentTarget) close();
       }}
     >
@@ -194,7 +242,11 @@ const EditModal = ({ reservation, close, refresh }) => {
           <button
             className="modal-btn primary"
             onClick={handleSave}
+<<<<<<< Updated upstream
             disabled={!canSave || saving}
+=======
+            disabled={!canSave}
+>>>>>>> Stashed changes
             title={!canSave ? "Fill required fields" : "Save changes"}
           >
             {saving ? "Saving…" : "Save"}

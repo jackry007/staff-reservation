@@ -8,7 +8,11 @@ import ConfirmModal from "./ConfirmModal";
 import "react-calendar/dist/Calendar.css";
 import "./calendar.css";
 
+<<<<<<< Updated upstream
 /** Format date as YYYY-MM-DD using LOCAL time (prevents timezone bugs) */
+=======
+/** LOCAL date (YYYY-MM-DD). Prevents timezone bugs from toISOString(). */
+>>>>>>> Stashed changes
 function toLocalYMD(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -19,7 +23,11 @@ function todayYMD() {
   return toLocalYMD(new Date());
 }
 function isPastYMD(ymd) {
+<<<<<<< Updated upstream
   return ymd < todayYMD();
+=======
+  return ymd < todayYMD(); // works for YYYY-MM-DD
+>>>>>>> Stashed changes
 }
 function isTodayOrFutureYMD(ymd) {
   return ymd >= todayYMD();
@@ -37,7 +45,11 @@ function App() {
   const [editRes, setEditRes] = useState(null);
   const [deleteResId, setDeleteResId] = useState(null);
 
+<<<<<<< Updated upstream
   const [loading, setLoading] = useState(false);
+=======
+  const [loadingList, setLoadingList] = useState(false);
+>>>>>>> Stashed changes
   const [loadingHighlights, setLoadingHighlights] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,6 +58,11 @@ function App() {
     [selectedYMD]
   );
 
+<<<<<<< Updated upstream
+=======
+  const selectedIsPast = useMemo(() => isPastYMD(selectedYMD), [selectedYMD]);
+
+>>>>>>> Stashed changes
   // ---- Auth ----
   useEffect(() => {
     let mounted = true;
@@ -68,7 +85,11 @@ function App() {
 
   // ---- Data ----
   const fetchReservations = useCallback(async () => {
+<<<<<<< Updated upstream
     setLoading(true);
+=======
+    setLoadingList(true);
+>>>>>>> Stashed changes
     setError("");
 
     const { data, error } = await supabase
@@ -85,7 +106,11 @@ function App() {
       setReservations(data || []);
     }
 
+<<<<<<< Updated upstream
     setLoading(false);
+=======
+    setLoadingList(false);
+>>>>>>> Stashed changes
   }, [selectedYMD]);
 
   const fetchHighlightedDates = useCallback(async () => {
@@ -125,7 +150,11 @@ function App() {
         return;
       }
 
+<<<<<<< Updated upstream
       setLoading(true);
+=======
+      setLoadingList(true);
+>>>>>>> Stashed changes
       setError("");
 
       const { error } = await supabase
@@ -141,7 +170,11 @@ function App() {
         await refreshAll();
       }
 
+<<<<<<< Updated upstream
       setLoading(false);
+=======
+      setLoadingList(false);
+>>>>>>> Stashed changes
     },
     [canModifySelectedDay, refreshAll]
   );
@@ -163,7 +196,11 @@ function App() {
             <p className="app-subtitle">
               Selected:{" "}
               <span className="text-strong">{selectedDate.toDateString()}</span>{" "}
+<<<<<<< Updated upstream
               {isPastYMD(selectedYMD) ? (
+=======
+              {selectedIsPast ? (
+>>>>>>> Stashed changes
                 <span className="badge badge-danger">Past date locked</span>
               ) : (
                 <span className="badge badge-success">Editable</span>
@@ -175,6 +212,7 @@ function App() {
             <button
               className="btn btn-secondary"
               onClick={refreshAll}
+<<<<<<< Updated upstream
               disabled={loading}
             >
               {loading ? "Refreshing…" : "Refresh"}
@@ -182,6 +220,18 @@ function App() {
             <button
               className="btn btn-secondary"
               onClick={() => supabase.auth.signOut()}
+=======
+              disabled={loadingList}
+              title="Refresh"
+            >
+              {loadingList ? "Refreshing…" : "Refresh"}
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => supabase.auth.signOut()}
+              title="Sign out"
+>>>>>>> Stashed changes
             >
               Sign out
             </button>
@@ -215,10 +265,19 @@ function App() {
 
                 return classes.join(" ");
               }}
+<<<<<<< Updated upstream
             />
           </section>
 
           {/* List */}
+=======
+              // Optional: if you want users to NOT even select past dates, enable this:
+              // tileDisabled={({ date, view }) => view === "month" && isPastYMD(toLocalYMD(date))}
+            />
+          </section>
+
+          {/* Reservations list */}
+>>>>>>> Stashed changes
           <section className="card card-scroll">
             <div className="list-header">
               <h2 className="list-title">
@@ -237,14 +296,22 @@ function App() {
               </span>
             </div>
 
+<<<<<<< Updated upstream
             {loading ? (
+=======
+            {loadingList ? (
+>>>>>>> Stashed changes
               <div className="muted">Loading reservations…</div>
             ) : reservations.length === 0 ? (
               <div className="empty-box">No reservations yet for this day.</div>
             ) : (
               <ul className="res-list">
                 {reservations.map((r) => {
+<<<<<<< Updated upstream
                   const disableActions = loading || !canModifySelectedDay;
+=======
+                  const disableActions = loadingList || !canModifySelectedDay;
+>>>>>>> Stashed changes
 
                   return (
                     <li key={r.id} className="res-row">
@@ -279,6 +346,10 @@ function App() {
                         >
                           Edit
                         </button>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
                         <button
                           className="btn btn-danger"
                           disabled={disableActions}
@@ -303,8 +374,13 @@ function App() {
           </section>
         </div>
 
+<<<<<<< Updated upstream
         {/* Add Form */}
         <section className="card mt-16">
+=======
+        {/* Add Reservation */}
+        <section className="card mt-16 add-sheet">
+>>>>>>> Stashed changes
           <div className="card-header">
             <div className="card-title">Add Reservation</div>
             {!canModifySelectedDay && (
@@ -312,7 +388,11 @@ function App() {
             )}
           </div>
 
+<<<<<<< Updated upstream
           {/* You must implement disabled in ReservationForm for full lock */}
+=======
+          {/* IMPORTANT: Your ReservationForm should use `disabled` to block submit */}
+>>>>>>> Stashed changes
           <ReservationForm
             selectedDate={selectedDate}
             refresh={refreshAll}
@@ -430,7 +510,11 @@ function Login() {
         </button>
 
         <p className="login-foot">
+<<<<<<< Updated upstream
           Tip: If it fails, double-check the Supabase user exists + password is
+=======
+          Tip: If it fails, confirm the Supabase user exists and the password is
+>>>>>>> Stashed changes
           correct.
         </p>
       </form>
