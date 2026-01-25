@@ -36,9 +36,8 @@ function generateTimeSlots({
     let h12 = h24 % 12;
     if (h12 === 0) h12 = 12;
 
-    const label = `${h12}:${String(min).padStart(2, "0")} ${
-      isPM ? "PM" : "AM"
-    }`;
+    const label = `${h12}:${String(min).padStart(2, "0")} ${isPM ? "PM" : "AM"
+      }`;
     slots.push(label);
 
     cur += stepMinutes;
@@ -47,18 +46,29 @@ function generateTimeSlots({
   return slots;
 }
 
-/** Gentle phone formatter: "+1 XXX-XXX-XXXX" */
-function formatUSPhone(input) {
-  const digits = (input || "").replace(/\D/g, "");
-  const ten =
-    digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
-  const clean = ten.slice(0, 10);
+/**
+ * Phone helpers
+ * - store digits only: "7201234567"
+ * - display formatted: "+1 720-123-4567"
+ */
+function onlyDigits(s) {
+  return (s || "").replace(/\D/g, "");
+}
+function normalizeUS10(digits) {
+  // allow pasting with leading 1 -> drop it
+  const d = onlyDigits(digits);
+  if (d.length === 11 && d.startsWith("1")) return d.slice(1, 11);
+  return d.slice(0, 10);
+}
+function formatUS10(d10) {
+  const d = normalizeUS10(d10);
+  if (!d) return ""; // IMPORTANT: allow blank so backspace works naturally
 
+  // build "+1 XXX-XXX-XXXX" progressively
   let out = "+1 ";
-  if (clean.length > 0) out += clean.slice(0, 3);
-  if (clean.length >= 4) out += "-" + clean.slice(3, 6);
-  if (clean.length >= 7) out += "-" + clean.slice(6, 10);
-  return out;
+  if (d.length <= 3) return out + d;
+  if (d.length <= 6) return out + d.slice(0, 3) + "-" + d.slice(3);
+  return out + d.slice(0, 3) + "-" + d.slice(3, 6) + "-" + d.slice(6);
 }
 
 const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
@@ -80,7 +90,7 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
   );
 
   const [name, setName] = useState("");
-  const [phoneRaw, setPhoneRaw] = useState("");
+  const [phoneDigits, setPhoneDigits] = useState(""); // store digits only
   const [sizeText, setSizeText] = useState("1");
   const [time, setTime] = useState("");
 
@@ -88,9 +98,10 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const phoneFormatted = useMemo(() => formatUSPhone(phoneRaw), [phoneRaw]);
+  const phoneDisplay = useMemo(() => formatUS10(phoneDigits), [phoneDigits]);
 
   const size = useMemo(() => {
+    // keep it strict, but don’t coerce weird stuff
     const n = Number(sizeText);
     return Number.isFinite(n) ? n : NaN;
   }, [sizeText]);
@@ -99,11 +110,10 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
     if (disabled || saving) return false;
     if (!name.trim()) return false;
     if (!Number.isFinite(size) || size < 1) return false;
-    const digits = phoneFormatted.replace(/\D/g, "");
-    if (digits.length !== 11) return false; // +1 + 10 digits
+    if (normalizeUS10(phoneDigits).length !== 10) return false;
     if (!time) return false;
     return true;
-  }, [disabled, saving, name, size, phoneFormatted, time]);
+  }, [disabled, saving, name, size, phoneDigits, time]);
 
   const save = async () => {
     setError("");
@@ -115,12 +125,13 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
     }
 
     const cleanedName = name.trim();
-    const digits = phoneFormatted.replace(/\D/g, "");
+    const d10 = normalizeUS10(phoneDigits);
+    const formattedPhone = formatUS10(d10);
 
     if (!cleanedName) return setError("Name is required.");
     if (!Number.isFinite(size) || size < 1)
       return setError("Party size must be at least 1.");
-    if (digits.length !== 11)
+    if (d10.length !== 10)
       return setError("Phone must be a valid US number (10 digits).");
     if (!time) return setError("Please select a time.");
 
@@ -128,8 +139,8 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
 
     const { error } = await supabase.from("reservations").insert({
       name: cleanedName,
-      phone: phoneFormatted,
-      size,
+      phone: formattedPhone, // store formatted string
+      size, // store number
       time, // store label like "5:30 PM"
       date: dateYMD,
     });
@@ -142,7 +153,7 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
     }
 
     setName("");
-    setPhoneRaw("");
+    setPhoneDigits("");
     setSizeText("1");
     setTime("");
     setSuccess("✅ Reservation saved!");
@@ -153,8 +164,6 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
 
   return (
     <div>
-      {/* NOTE: Do NOT put "Add Reservation" title here if App.jsx already shows it */}
-
       {locked && (
         <div className="alert alert-danger" style={{ marginTop: 0 }}>
           Past dates are locked — you can view them but not add reservations.
@@ -176,7 +185,6 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
         </div>
       )}
 
-      {/* Use same grid styling as modal for consistency */}
       <div className="modal-grid" style={{ marginTop: 10 }}>
         <label className="modal-field">
           <span className="modal-label">Name</span>
@@ -193,10 +201,16 @@ const ReservationForm = ({ selectedDate, refresh, disabled: disabledProp }) => {
           <span className="modal-label">Phone</span>
           <input
             className="modal-input"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
             placeholder="+1 720-123-4567"
-            value={phoneFormatted}
-            onChange={(e) => setPhoneRaw(e.target.value)}
-            inputMode="tel"
+            value={phoneDisplay}
+            onChange={(e) => {
+              // allow full deletion & normal backspace
+              const d10 = normalizeUS10(e.target.value);
+              setPhoneDigits(d10);
+            }}
             disabled={disabled}
           />
         </label>
