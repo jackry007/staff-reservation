@@ -24,6 +24,35 @@ function isPastYMD(ymd) {
 function isTodayOrFutureYMD(ymd) {
   return ymd >= todayYMD();
 }
+function buildGoogleCalendarUrl10AM({ name, size, phone, dateYMD, timeLabel }) {
+  const startLocal = new Date(`${dateYMD}T10:00:00`);
+  const endLocal = new Date(`${dateYMD}T10:15:00`);
+
+  const toGCalLocal = (d) => {
+    const pad = (n) => String(n).padStart(2, "0");
+    return (
+      d.getFullYear() +
+      pad(d.getMonth() + 1) +
+      pad(d.getDate()) +
+      "T" +
+      pad(d.getHours()) +
+      pad(d.getMinutes()) +
+      "00"
+    );
+  };
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `Hiro Reminder — ${name} (${Number(size) || 0} ppl)`,
+    dates: `${toGCalLocal(startLocal)}/${toGCalLocal(endLocal)}`,
+    details: `Reservation time: ${timeLabel || "N/A"}\nPhone: ${phone || ""
+      }\n\n(10:00 AM reminder created from Hiro Staff Reservation)`,
+    location: "Hiro Japanese Buffet",
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -220,8 +249,8 @@ function App() {
 
                 return classes.join(" ");
               }}
-              // Optional: if you want users to NOT even select past dates, enable this:
-              // tileDisabled={({ date, view }) => view === "month" && isPastYMD(toLocalYMD(date))}
+            // Optional:
+            // tileDisabled={({ date, view }) => view === "month" && isPastYMD(toLocalYMD(date))}
             />
           </section>
 
@@ -236,9 +265,8 @@ function App() {
               </h2>
 
               <span
-                className={`badge ${
-                  canModifySelectedDay ? "badge-success" : "badge-danger"
-                }`}
+                className={`badge ${canModifySelectedDay ? "badge-success" : "badge-danger"
+                  }`}
               >
                 {canModifySelectedDay ? "Edit enabled" : "Read-only"}
               </span>
@@ -253,14 +281,21 @@ function App() {
                 {reservations.map((r) => {
                   const disableActions = loadingList || !canModifySelectedDay;
 
+                  const calUrl =
+                    buildGoogleCalendarUrl10AM({
+                      name: r.name,
+                      size: r.size,
+                      phone: r.phone,
+                      dateYMD: selectedYMD,
+                      timeLabel: r.time,
+                    });
+
                   return (
                     <li key={r.id} className="res-row">
                       <div className="res-left">
                         <div className="res-main">
                           <span className="res-name">{r.name}</span>
-                          <span className="pill">
-                            {Number(r.size) || 0} ppl
-                          </span>
+                          <span className="pill">{Number(r.size) || 0} ppl</span>
                           {r.time ? (
                             <span className="pill pill-time">{r.time}</span>
                           ) : (
@@ -271,6 +306,20 @@ function App() {
                       </div>
 
                       <div className="res-actions">
+                        {/* Add to Calendar */}
+                        {calUrl && (
+                          <a
+                            className="btn btn-secondary"
+                            href={calUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Add to Google Calendar"
+                            style={{ textDecoration: "none" }}
+                          >
+                            Add to Calendar
+                          </a>
+                        )}
+
                         <button
                           className="btn btn-warn"
                           disabled={disableActions}
@@ -320,7 +369,6 @@ function App() {
             )}
           </div>
 
-          {/* IMPORTANT: Your ReservationForm should use `disabled` to block submit */}
           <ReservationForm
             selectedDate={selectedDate}
             refresh={refreshAll}
