@@ -54,12 +54,17 @@ function generateTimeSlots({
 function onlyDigits(s) {
   return (s || "").replace(/\D/g, "");
 }
-function normalizeUS10(digits) {
-  // allow pasting with leading 1 -> drop it
-  const d = onlyDigits(digits);
-  if (d.length === 11 && d.startsWith("1")) return d.slice(1, 11);
+function normalizeUS10(input) {
+  let d = onlyDigits(input);
+
+  // If the string contains a leading country code "1", strip it.
+  // This prevents "+1" from becoming part of the area code while typing.
+  if (d.startsWith("1")) d = d.slice(1);
+
   return d.slice(0, 10);
 }
+
+
 function formatUS10(d10) {
   const d = normalizeUS10(d10);
   if (!d) return ""; // IMPORTANT: allow blank so backspace works naturally
