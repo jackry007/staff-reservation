@@ -1,27 +1,96 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* App.css (mobile-first, clean layout) */
+
+/* ---------- Base reset-ish ---------- */
+:root {
+  /* If you already have theme colors elsewhere, you can delete these */
+  --bg: #0b0f17;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.10);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+
+  --radius: 16px;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Root container ---------- */
+/* IMPORTANT: Do NOT force center text globally on mobile */
+#root {
+  width: 100%;
+  max-width: 1100px;
+
+  /* Mobile-first padding */
+  padding: 16px;
+  margin: 0 auto;
+
+  /* Default alignment should be normal */
+  text-align: left;
+}
+
+/* Slightly more breathing room on bigger screens */
+@media (min-width: 640px) {
+  #root {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  #root {
+    padding: 32px;
+  }
+}
+
+/* ---------- Logo (optional / harmless) ---------- */
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+  height: 64px;
+  width: 64px;
+  padding: 0;
+  display: inline-block;
+  will-change: filter, transform;
+  transition: filter 250ms, transform 250ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 18px rgba(100, 108, 255, 0.35));
+  transform: translateY(-1px);
 }
+
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 18px rgba(97, 218, 251, 0.35));
 }
 
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -33,10 +102,55 @@
   }
 }
 
+/* ---------- Card ---------- */
+/* Your old .card was just padding. This makes it actually usable. */
 .card {
-  padding: 2em;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+
+  padding: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+
+  /* Prevent weird overflow on small screens */
+  overflow: hidden;
 }
 
+/* More padding on larger screens */
+@media (min-width: 640px) {
+  .card {
+    padding: 18px;
+  }
+}
+
+/* ---------- Utility / small text ---------- */
 .read-the-docs {
-  color: #888;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ---------- Helpful mobile spacing defaults ---------- */
+/* If your layout uses a lot of sections, this keeps them spaced nicely */
+section+section {
+  margin-top: 16px;
+}
+
+/* Make buttons/inputs feel better on mobile if your app uses them */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+/* Optional: reduce accidental zoom on iOS by keeping inputs >= 16px */
+input,
+select,
+textarea {
+  font-size: 16px;
 }
