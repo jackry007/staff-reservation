@@ -7,6 +7,7 @@ import EditModal from "./EditModal";
 import ConfirmModal from "./ConfirmModal";
 import "react-calendar/dist/Calendar.css";
 import "./calendar.css";
+import "./App.css";
 
 /** LOCAL date (YYYY-MM-DD). Prevents timezone bugs from toISOString(). */
 function toLocalYMD(date) {
@@ -43,10 +44,11 @@ function buildGoogleCalendarUrl11AM({ name, size, phone, dateYMD, timeLabel }) {
 
   const params = new URLSearchParams({
     action: "TEMPLATE",
-    text: `Hiro Reminder — ${name} (${Number(size) || 0} ppl)`,
+
+    text: `${timeLabel || "No time"} — ${name} (${Number(size) || 0} ppl)`,
     dates: `${toGCalLocal(startLocal)}/${toGCalLocal(endLocal)}`,
     details: `Reservation time: ${timeLabel || "N/A"}\nPhone: ${phone || ""
-      }\n\n(10:00 AM reminder created from Hiro Staff Reservation)`,
+      }\n\n(11:00 AM reminder created from Hiro Staff Reservation)`,
     location: "Hiro Japanese Buffet",
   });
 
@@ -294,12 +296,10 @@ function App() {
                     <li key={r.id} className="res-row">
                       <div className="res-left">
                         <div className="res-main">
-                          <div className="res-main">
-                            <span className="res-title">
-                              {r.time || "No time"} – {r.name} ({Number(r.size) || 0}{" "}
-                              {Number(r.size) === 1 ? "person" : "people"})
-                            </span>
-                          </div>
+                          <span className="res-title">
+                            {r.time || "No time"} — {r.name} ({Number(r.size) || 0}{" "}
+                            {Number(r.size) === 1 ? "person" : "people"})
+                          </span>
                         </div>
                         <div className="res-sub">{r.phone}</div>
                       </div>

@@ -1,17 +1,8 @@
-/* App.css (mobile-first, clean layout) */
+/* App.css — mobile-first base styles (plays nice with calendar.css) */
 
-/* ---------- Base reset-ish ---------- */
-:root {
-  /* If you already have theme colors elsewhere, you can delete these */
-  --bg: #0b0f17;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-border: rgba(255, 255, 255, 0.10);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.65);
-
-  --radius: 16px;
-}
-
+/* -------------------------
+   Base resets / defaults
+------------------------- */
 *,
 *::before,
 *::after {
@@ -40,34 +31,40 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ---------- Root container ---------- */
-/* IMPORTANT: Do NOT force center text globally on mobile */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent iOS zoom when focusing inputs */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* -------------------------
+   Root container
+   IMPORTANT: keep minimal.
+   Your app-shell/app-container do layout.
+------------------------- */
 #root {
   width: 100%;
-  max-width: 1100px;
-
-  /* Mobile-first padding */
-  padding: 16px;
-  margin: 0 auto;
-
-  /* Default alignment should be normal */
+  margin: 0;
+  padding: 0;
   text-align: left;
 }
 
-/* Slightly more breathing room on bigger screens */
-@media (min-width: 640px) {
-  #root {
-    padding: 24px;
-  }
-}
-
-@media (min-width: 1024px) {
-  #root {
-    padding: 32px;
-  }
-}
-
-/* ---------- Logo (optional / harmless) ---------- */
+/* -------------------------
+   Optional: logo animation (harmless)
+------------------------- */
 .logo {
   height: 64px;
   width: 64px;
@@ -102,55 +99,65 @@ a:hover {
   }
 }
 
-/* ---------- Card ---------- */
-/* Your old .card was just padding. This makes it actually usable. */
-.card {
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius);
-
-  padding: 14px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
-
-  /* Prevent weird overflow on small screens */
-  overflow: hidden;
-}
-
-/* More padding on larger screens */
-@media (min-width: 640px) {
-  .card {
-    padding: 18px;
-  }
-}
-
-/* ---------- Utility / small text ---------- */
-.read-the-docs {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-/* ---------- Helpful mobile spacing defaults ---------- */
-/* If your layout uses a lot of sections, this keeps them spaced nicely */
+/* -------------------------
+   Generic spacing helper
+------------------------- */
 section+section {
   margin-top: 16px;
 }
 
-/* Make buttons/inputs feel better on mobile if your app uses them */
-button,
-input,
-select,
-textarea {
-  font: inherit;
+/* -------------------------
+   Card baseline
+   NOTE: Your calendar.css also defines .card (more detailed).
+   If both exist, whichever loads last wins.
+   This is a light fallback.
+------------------------- */
+.card {
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-button {
-  touch-action: manipulation;
+/* -------------------------
+   MOBILE HEADER FIX
+   Make it a real toolbar on small screens:
+   - subtitle hidden
+   - actions compact
+   - no 100% grid stretch
+------------------------- */
+@media (max-width: 640px) {
+  .app-header {
+    align-items: center;
+    padding: 8px 0;
+    gap: 10px;
+  }
+
+  .app-title {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+
+  .app-subtitle {
+    display: none;
+  }
+
+  .header-actions {
+    width: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .header-actions .btn {
+    min-height: 40px;
+    padding: 8px 10px;
+  }
 }
 
-/* Optional: reduce accidental zoom on iOS by keeping inputs >= 16px */
-input,
-select,
-textarea {
-  font-size: 16px;
+/* -------------------------
+   Small text utility
+------------------------- */
+.read-the-docs {
+  opacity: 0.7;
+  font-size: 14px;
+  line-height: 1.4;
 }
