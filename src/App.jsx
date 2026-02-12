@@ -24,9 +24,9 @@ function isPastYMD(ymd) {
 function isTodayOrFutureYMD(ymd) {
   return ymd >= todayYMD();
 }
-function buildGoogleCalendarUrl10AM({ name, size, phone, dateYMD, timeLabel }) {
-  const startLocal = new Date(`${dateYMD}T10:00:00`);
-  const endLocal = new Date(`${dateYMD}T10:15:00`);
+function buildGoogleCalendarUrl11AM({ name, size, phone, dateYMD, timeLabel }) {
+  const startLocal = new Date(`${dateYMD}T11:00:00`);
+  const endLocal = new Date(`${dateYMD}T11:15:00`);
 
   const toGCalLocal = (d) => {
     const pad = (n) => String(n).padStart(2, "0");
@@ -282,7 +282,7 @@ function App() {
                   const disableActions = loadingList || !canModifySelectedDay;
 
                   const calUrl =
-                    buildGoogleCalendarUrl10AM({
+                    buildGoogleCalendarUrl11AM({
                       name: r.name,
                       size: r.size,
                       phone: r.phone,
@@ -294,13 +294,12 @@ function App() {
                     <li key={r.id} className="res-row">
                       <div className="res-left">
                         <div className="res-main">
-                          <span className="res-name">{r.name}</span>
-                          <span className="pill">{Number(r.size) || 0} ppl</span>
-                          {r.time ? (
-                            <span className="pill pill-time">{r.time}</span>
-                          ) : (
-                            <span className="pill pill-muted">No time</span>
-                          )}
+                          <div className="res-main">
+                            <span className="res-title">
+                              {r.time || "No time"} – {r.name} ({Number(r.size) || 0}{" "}
+                              {Number(r.size) === 1 ? "person" : "people"})
+                            </span>
+                          </div>
                         </div>
                         <div className="res-sub">{r.phone}</div>
                       </div>
