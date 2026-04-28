@@ -2,16 +2,37 @@ import React, { useState, useEffect } from "react";
 import { updateReservation } from "./googleSheetsApi";
 
 const EditModal = ({ reservation, close, refresh }) => {
+  const formatPhoneInput = (value) => {
+    let digits = String(value || "").replace(/\D/g, "");
+
+    if (digits.startsWith("1")) {
+      digits = digits.slice(1);
+    }
+
+    digits = digits.slice(0, 10);
+
+    let formatted = "+1 ";
+    if (digits.length > 0) formatted += digits.slice(0, 3);
+    if (digits.length >= 4) formatted += "-" + digits.slice(3, 6);
+    if (digits.length >= 7) formatted += "-" + digits.slice(6, 10);
+
+    return formatted;
+  };
+
   const [name, setName] = useState(reservation.name || "");
-  const [phone, setPhone] = useState(reservation.phone || "");
+  const [phone, setPhone] = useState(formatPhoneInput(reservation.phone || ""));
   const [size, setSize] = useState(reservation.size || "");
   const [time, setTime] = useState(reservation.time || "");
+
+  const handlePhoneChange = (e) => {
+    setPhone(formatPhoneInput(e.target.value));
+  };
 
   const handleSave = async () => {
     try {
       const result = await updateReservation(reservation.id, {
         name,
-        phone,
+        phone: String(phone),
         size: Number(size),
         time,
         date: reservation.date,
@@ -22,7 +43,7 @@ const EditModal = ({ reservation, close, refresh }) => {
         return;
       }
 
-      refresh();
+      await refresh();
       close();
     } catch (error) {
       alert("Failed to update reservation.");
@@ -37,6 +58,31 @@ const EditModal = ({ reservation, close, refresh }) => {
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [close]);
+
+  const timeSlots = [
+    "11:00 AM",
+    "11:30 AM",
+    "12:00 PM",
+    "12:30 PM",
+    "1:00 PM",
+    "1:30 PM",
+    "2:00 PM",
+    "2:30 PM",
+    "3:00 PM",
+    "3:30 PM",
+    "4:00 PM",
+    "4:30 PM",
+    "5:00 PM",
+    "5:30 PM",
+    "6:00 PM",
+    "6:30 PM",
+    "7:00 PM",
+    "7:30 PM",
+    "8:00 PM",
+    "8:30 PM",
+    "9:00 PM",
+    "9:30 PM",
+  ];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
@@ -54,7 +100,8 @@ const EditModal = ({ reservation, close, refresh }) => {
         <input
           className="bg-gray-700 text-white border border-gray-600 p-2 w-full mb-3 rounded"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={handlePhoneChange}
+          placeholder="+1 720-123-4567"
         />
 
         <label className="block text-sm mb-1">Party Size</label>
@@ -73,30 +120,7 @@ const EditModal = ({ reservation, close, refresh }) => {
           onChange={(e) => setTime(e.target.value)}
         >
           <option value="">Select a time</option>
-          {[
-            "11:00 AM",
-            "11:30 AM",
-            "12:00 PM",
-            "12:30 PM",
-            "1:00 PM",
-            "1:30 PM",
-            "2:00 PM",
-            "2:30 PM",
-            "3:00 PM",
-            "3:30 PM",
-            "4:00 PM",
-            "4:30 PM",
-            "5:00 PM",
-            "5:30 PM",
-            "6:00 PM",
-            "6:30 PM",
-            "7:00 PM",
-            "7:30 PM",
-            "8:00 PM",
-            "8:30 PM",
-            "9:00 PM",
-            "9:30 PM",
-          ].map((slot) => (
+          {timeSlots.map((slot) => (
             <option key={slot} value={slot}>
               {slot}
             </option>
