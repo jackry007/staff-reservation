@@ -22,6 +22,7 @@ function App() {
   const [deleteResId, setDeleteResId] = useState(null);
   const [highlightedDates, setHighlightedDates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const formatDateLocal = (date) => date.toLocaleDateString("en-CA");
 
@@ -77,7 +78,7 @@ function App() {
 
     setTimeout(() => {
       setLoading(false);
-    }, 100); 
+    }, 100);
   };
 
   const filterReservationsForSelectedDate = () => {
@@ -205,13 +206,32 @@ function App() {
           </div>
 
           <div className="card card-scroll">
-            <h2 className="list-title">
-              Reservations for {selectedDate.toDateString()}
-            </h2>
-            <p className="list-meta">{totalSize} people total</p>
+            <div className="list-header">
+              <div>
+                <h2 className="list-title">
+                  Reservations for {selectedDate.toDateString()}
+                </h2>
+                <p className="list-meta">{totalSize} people total</p>
+              </div>
+
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowAddModal(true)}
+              >
+                + Add
+              </button>
+            </div>
 
             {reservations.length === 0 ? (
-              <div className="empty-box">No reservations for this date.</div>
+              <div className="empty-box">
+                <p>No reservations yet.</p>
+                <button
+                  className="btn btn-primary mt-8"
+                  onClick={() => setShowAddModal(true)}
+                >
+                  + Add First Reservation
+                </button>
+              </div>
             ) : (
               <ul className="res-list">
                 {reservations.map((r) => {
@@ -263,13 +283,14 @@ function App() {
           </div>
         </section>
 
-        <section className="card mt-16">
+        {showAddModal && (
           <ReservationForm
             selectedDate={selectedDate}
             refresh={refreshData}
             addReservationLocal={addReservationLocal}
+            close={() => setShowAddModal(false)}
           />
-        </section>
+        )}
 
         {editRes && (
           <EditModal
@@ -297,5 +318,3 @@ function App() {
 }
 
 export default App;
-
-
