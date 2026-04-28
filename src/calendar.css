@@ -901,3 +901,14 @@
   white-space: nowrap;
   min-height: 40px;
 }
+
+.app-shell {
+  min-height: 100dvh;
+}
+
+.app-container {
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}

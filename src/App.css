@@ -279,4 +279,34 @@ button {
   }
 }
 
+.app-shell {
+  min-height: 100dvh;
+}
 
+.app-container {
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+
+button {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.btn,
+.modal-btn,
+.form-save-btn {
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease;
+}
+
+.btn:active,
+.modal-btn:active,
+.form-save-btn:active {
+  transform: scale(0.97);
+  filter: brightness(0.97);
+}
