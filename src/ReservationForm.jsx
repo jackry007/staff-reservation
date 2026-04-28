@@ -35,6 +35,8 @@ const ReservationForm = ({ selectedDate, refresh, addReservationLocal }) => {
     "7:30 PM",
     "8:00 PM",
     "8:30 PM",
+    "9:00 PM",
+    "9:30 PM",
   ];
 
   const handlePhoneChange = (e) => {
@@ -88,7 +90,7 @@ const ReservationForm = ({ selectedDate, refresh, addReservationLocal }) => {
     setSize("");
     setTime("");
     setErrors({});
-    setSuccess("✅ Reservation saved!");
+    setSuccess("Reservation saved!");
     setTimeout(() => setSuccess(""), 3000);
 
     try {
@@ -105,62 +107,81 @@ const ReservationForm = ({ selectedDate, refresh, addReservationLocal }) => {
   };
 
   return (
-    <div className="mt-4">
-      <h3 className="text-xl font-semibold mb-3 text-white">Add Reservation</h3>
+    <div className="reservation-form">
+      <div className="form-header">
+        <div>
+          <h3 className="form-title">Add Reservation</h3>
+          <p className="form-subtitle">
+            Adding for {selectedDate.toDateString()}
+          </p>
+        </div>
+      </div>
 
       {error && (
-        <p className="text-red-500 mb-2 font-medium">
+        <div className="form-alert form-alert-error">
           {error}
           <br />
-          Phone format must be:{" "}
-          <span className="underline">+1 720-123-4567</span>
-        </p>
+          Phone format must be: <strong>+1 720-123-4567</strong>
+        </div>
       )}
 
-      {success && <p className="text-green-500 mb-3 font-medium">{success}</p>}
+      {success && (
+        <div className="form-alert form-alert-success">{success}</div>
+      )}
 
-      <input
-        className={`w-full px-4 py-2 rounded-lg mb-3 bg-gray-900 text-white placeholder-gray-400 border ${errors.name ? "border-red-500" : "border-gray-700"}`}
-        placeholder="Full Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <div className="form-grid">
+        <label className="form-field">
+          <span className="form-label">Full Name</span>
+          <input
+            className={`form-input ${errors.name ? "input-error" : ""}`}
+            placeholder="Customer name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
 
-      <input
-        type="tel"
-        className={`w-full px-4 py-2 rounded-lg mb-3 bg-gray-900 text-white placeholder-gray-400 border ${errors.phone ? "border-red-500" : "border-gray-700"}`}
-        placeholder="+1 720-123-4567"
-        value={phone}
-        onChange={handlePhoneChange}
-      />
+        <label className="form-field">
+          <span className="form-label">Phone</span>
+          <input
+            type="tel"
+            className={`form-input ${errors.phone ? "input-error" : ""}`}
+            placeholder="+1 720-123-4567"
+            value={phone}
+            onChange={handlePhoneChange}
+          />
+        </label>
 
-      <input
-        type="number"
-        min={1}
-        className={`w-full px-4 py-2 rounded-lg mb-3 bg-gray-900 text-white placeholder-gray-400 border ${errors.size ? "border-red-500" : "border-gray-700"}`}
-        placeholder="Party Size"
-        value={size}
-        onChange={(e) => setSize(e.target.value)}
-      />
+        <label className="form-field">
+          <span className="form-label">Party Size</span>
+          <input
+            type="number"
+            min={1}
+            className={`form-input ${errors.size ? "input-error" : ""}`}
+            placeholder="Number of guests"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+          />
+        </label>
 
-      <select
-        className={`w-full px-4 py-2 rounded-lg mb-4 bg-gray-900 text-white border ${errors.time ? "border-red-500" : "border-gray-700"}`}
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-      >
-        <option value="">Select a Time</option>
-        {timeSlots.map((slot) => (
-          <option key={slot} value={slot}>
-            {slot}
-          </option>
-        ))}
-      </select>
+        <label className="form-field">
+          <span className="form-label">Time</span>
+          <select
+            className={`form-input ${errors.time ? "input-error" : ""}`}
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+          >
+            <option value="">Select a time</option>
+            {timeSlots.map((slot) => (
+              <option key={slot} value={slot}>
+                {slot}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
-      <button
-        onClick={save}
-        className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg"
-      >
-        Save
+      <button onClick={save} className="form-save-btn">
+        Save Reservation
       </button>
     </div>
   );

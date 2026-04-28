@@ -1,333 +1,180 @@
-/* calendar.css (mobile-first, app-like) */
+/* calendar.css — Hiro Staff Reservation, clean light dashboard */
 
-/* =========================
-   THEME
-========================= */
 :root {
-  --bg: #030712;
-  /* gray-950 */
-  --card: rgba(17, 24, 39, 0.88);
-  --border: rgba(55, 65, 81, 1);
-  --text: #e5e7eb;
-  --muted: #9ca3af;
+  --bg: #f4f6fb;
+  --panel: #ffffff;
+  --panel-soft: #f8fafc;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
 
-  --primary: #facc15;
-  /* yellow */
-  --danger: #ef4444;
-  --warn: #eab308;
-  --success: #22c55e;
+  --primary: #f59e0b;
+  --primary-soft: #fffbeb;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --success: #16a34a;
+  --success-soft: #f0fdf4;
   --blue: #2563eb;
+  --blue-soft: #eff6ff;
 
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  --radius: 18px;
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  --shadow-sm: 0 8px 22px rgba(15, 23, 42, 0.06);
+  --radius: 22px;
   --tap: 44px;
 }
 
-/* =========================
-   APP LAYOUT
-========================= */
+/* Page layout */
 .app-shell {
   min-height: 100vh;
   background:
-    radial-gradient(1200px 600px at 50% 20%, rgba(37, 99, 235, 0.18), transparent),
-    radial-gradient(900px 500px at 20% 80%, rgba(250, 204, 21, 0.10), transparent),
+    radial-gradient(
+      800px 420px at 15% 10%,
+      rgba(37, 99, 235, 0.1),
+      transparent
+    ),
+    radial-gradient(
+      900px 460px at 90% 5%,
+      rgba(245, 158, 11, 0.14),
+      transparent
+    ),
     var(--bg);
   color: var(--text);
 }
 
 .app-container {
-  max-width: 1120px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 18px;
-  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
 }
 
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 900px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Header */
 .app-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .app-title {
   margin: 0;
-  font-size: 32px;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  color: var(--text);
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
 .app-subtitle {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.text-strong {
-  color: var(--text);
-  font-weight: 800;
+  font-size: 15px;
 }
 
 .header-actions {
   display: flex;
   gap: 10px;
   align-items: center;
-  flex-shrink: 0;
 }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-
-@media (min-width: 820px) {
-  .grid-2 {
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-}
-
-.mt-16 {
-  margin-top: 16px;
-}
-
-/* =========================
-   MOBILE APP FEEL
-========================= */
-@media (max-width: 640px) {
-
-  /* Sticky header like an app */
-  .app-header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    padding: 10px 0 8px;
-    background: rgba(3, 7, 18, 0.86);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(55, 65, 81, 0.55);
-    margin-bottom: 12px;
-  }
-
-  .app-title {
-    font-size: 24px;
-  }
-
-  /* Make header actions stack so they don't crush the title */
-  .header-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  /* Remove inner scroll trap on mobile */
-  .card-scroll {
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  /* Bottom “Add Reservation” sheet */
-  .add-sheet {
-    position: sticky;
-    bottom: 0;
-    z-index: 60;
-    border-radius: 18px 18px 0 0;
-    border-bottom: none;
-    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.55);
-    margin-top: 12px;
-  }
-}
-
-/* =========================
-   CARDS / ALERTS
-========================= */
+/* Cards */
 .card {
-  background: var(--card);
-  border: 1px solid rgba(31, 41, 55, 1);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 18px;
   box-shadow: var(--shadow);
 }
 
-@media (min-width: 640px) {
-  .card {
-    padding: 16px;
-  }
-}
-
 .card-scroll {
-  max-height: 560px;
+  max-height: 620px;
   overflow: auto;
   overscroll-behavior: contain;
 }
 
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.card-title {
-  font-weight: 900;
-  font-size: 16px;
-}
-
-.card-hint {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.alert {
+/* Buttons */
+.btn,
+.modal-btn {
+  border: 1px solid transparent;
   border-radius: 14px;
-  padding: 12px 14px;
-  margin: 12px 0;
-  border: 1px solid rgba(55, 65, 81, 1);
-}
-
-.alert-danger {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fecaca;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-.btn {
-  border: none;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 0.12s ease, opacity 0.12s ease, background-color 0.12s ease;
+  padding: 10px 14px;
   min-height: var(--tap);
+  font-weight: 850;
+  cursor: pointer;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease;
 }
 
-.btn:active {
+.btn:hover,
+.modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:active,
+.modal-btn:active {
   transform: scale(0.98);
 }
 
-.btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.btn-primary {
+.btn-primary,
+.modal-btn.primary {
   background: var(--primary);
-  color: #0b1220;
+  color: #111827;
 }
 
-.btn-secondary {
-  background: rgba(31, 41, 55, 1);
-  border: 1px solid rgba(55, 65, 81, 1);
+.btn-secondary,
+.modal-btn.secondary {
+  background: white;
+  border-color: var(--border);
   color: var(--text);
 }
 
 .btn-warn {
-  background: var(--warn);
-  color: #111827;
-  border-radius: 10px;
-  min-height: 40px;
+  background: var(--primary-soft);
+  border-color: #fcd34d;
+  color: #92400e;
 }
 
 .btn-danger {
   background: var(--danger);
   color: white;
-  border-radius: 10px;
-  min-height: 40px;
 }
 
-.w-full {
-  width: 100%;
-}
-
-/* =========================
-   BADGES / PILLS
-========================= */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 900;
-  border: 1px solid rgba(55, 65, 81, 1);
-  white-space: nowrap;
-}
-
-.badge-success {
-  background: rgba(34, 197, 94, 0.14);
-  border-color: rgba(34, 197, 94, 0.35);
-  color: #bbf7d0;
-}
-
-.badge-danger {
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(239, 68, 68, 0.35);
-  color: #fecaca;
-}
-
-.pill {
-  font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(17, 24, 39, 1);
-  border: 1px solid rgba(55, 65, 81, 1);
-  color: rgba(209, 213, 219, 1);
-  white-space: nowrap;
-}
-
-.pill-time {
-  color: rgba(253, 230, 138, 1);
-  border-color: rgba(234, 179, 8, 0.6);
-  background: rgba(113, 63, 18, 0.25);
-}
-
-.pill-muted {
-  color: rgba(156, 163, 175, 1);
-}
-
-/* =========================
-   RESERVATION LIST
-========================= */
-.list-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
+/* Reservation list */
 .list-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
-  line-height: 1.15;
+  color: var(--text);
 }
 
-.list-meta {
-  font-weight: 800;
+.list-meta,
+.muted {
   color: var(--muted);
-  font-size: 13px;
 }
 
 .empty-box {
-  border: 1px dashed rgba(55, 65, 81, 1);
-  border-radius: 16px;
-  padding: 14px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  padding: 16px;
   color: var(--muted);
-  background: rgba(3, 7, 18, 0.25);
+  background: var(--panel-soft);
 }
 
 .res-list {
@@ -335,18 +182,20 @@
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .res-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  background: rgba(31, 41, 55, 0.92);
-  border: 1px solid rgba(55, 65, 81, 1);
-  border-radius: 16px;
-  padding: 12px;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--primary);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
 }
 
 .res-left {
@@ -361,17 +210,18 @@
 }
 
 .res-name {
-  font-weight: 900;
-  color: white;
   max-width: 360px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 900;
 }
 
 .res-sub {
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: 5px;
+  font-size: 14px;
   color: var(--muted);
   word-break: break-word;
 }
@@ -382,402 +232,204 @@
   flex-shrink: 0;
 }
 
-/* Mobile: rows become vertical + actions stack */
-@media (max-width: 640px) {
-  .res-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .res-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .res-name {
-    max-width: 100%;
-  }
+/* Pills / badges */
+.pill,
+.badge {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 900;
 }
 
-/* =========================
-   CALENDAR (React Calendar)
-========================= */
+.pill {
+  padding: 3px 9px;
+  background: var(--panel-soft);
+  color: var(--muted);
+}
+
+.badge {
+  padding: 4px 10px;
+}
+
+.pill-time {
+  color: #92400e;
+  border-color: #fcd34d;
+  background: var(--primary-soft);
+}
+
+.pill-muted {
+  color: var(--muted);
+}
+
+.badge-success {
+  background: var(--success-soft);
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge-danger {
+  background: var(--danger-soft);
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+/* Calendar */
 .react-calendar {
-  background-color: #111827;
-  border: 1px solid rgba(55, 65, 81, 0.9);
-  padding: 12px;
-  border-radius: 16px;
   width: 100%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
-}
-
-@media (min-width: 640px) {
-  .react-calendar {
-    padding: 16px;
-  }
-}
-
-.react-calendar__month-view__weekdays {
-  text-transform: uppercase;
-  font-weight: 800;
-  font-size: 0.72rem;
-  color: #9ca3af;
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  box-shadow: var(--shadow);
 }
 
 .react-calendar__navigation {
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 8px;
 }
 
 .react-calendar__navigation button {
-  color: var(--primary);
-  background: transparent;
-  font-weight: 900;
-  font-size: 1rem;
-  border-radius: 12px;
   min-width: var(--tap);
   min-height: var(--tap);
+  color: var(--text);
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-weight: 900;
+}
+
+.react-calendar__navigation button:hover {
+  background: var(--primary-soft);
+  border-color: #fcd34d;
 }
 
 .react-calendar__navigation button:disabled {
-  color: #6b7280;
+  color: #cbd5e1;
+  background: #f8fafc;
 }
 
 .react-calendar__navigation__label {
+  color: var(--text) !important;
+  background: transparent !important;
+  border: none !important;
   font-size: 1.05rem;
-  color: white;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
-.react-calendar__navigation button:focus {
-  outline: none;
-  box-shadow: none;
+.react-calendar__month-view__weekdays {
+  margin-bottom: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: 0.72rem;
 }
 
-/* Tiles: larger tap targets on mobile, stable shape */
 .react-calendar__tile {
   position: relative;
   aspect-ratio: 1 / 1;
+  min-height: 48px;
   padding: 8px 0;
+  color: var(--text);
+  background: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 16px;
   font-size: 0.95rem;
-  color: #e5e7eb;
-  background-color: transparent;
-  border-radius: 14px;
-  transition: transform 0.15s ease, background-color 0.15s ease;
-  min-height: var(--tap);
-}
-
-/* Today */
-.react-calendar__tile--now {
-  background-color: rgba(37, 99, 235, 0.35) !important;
-  color: white !important;
-  font-weight: 900;
-  border-radius: 9999px;
-  outline: 2px solid rgba(37, 99, 235, 0.25);
-}
-
-/* Selected */
-.react-calendar__tile--active {
-  background-color: var(--warn) !important;
-  color: #111827 !important;
-  border-radius: 9999px;
-  font-weight: 900;
-  box-shadow: 0 0 10px rgba(250, 204, 21, 0.55);
-  transform: scale(1.06);
+  font-weight: 800;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .react-calendar__tile:enabled:hover {
-  background-color: rgba(75, 85, 99, 0.55);
-  color: white;
-  transform: scale(1.04);
-  border-radius: 9999px;
+  background: var(--blue-soft);
+  border-color: #bfdbfe;
+  color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Reservation dot (uses highlighted-date from App.jsx) */
+.react-calendar__tile--now {
+  background: var(--blue-soft) !important;
+  color: var(--blue) !important;
+  border-color: #93c5fd !important;
+  font-weight: 950;
+}
+
+.react-calendar__tile--active {
+  background: linear-gradient(135deg, #facc15, #f59e0b) !important;
+  color: #111827 !important;
+  border-color: #f59e0b !important;
+  font-weight: 950;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 28px rgba(245, 158, 11, 0.24);
+}
+
 .highlighted-date::after {
   content: "";
   position: absolute;
   bottom: 7px;
   left: 50%;
-  transform: translateX(-50%);
   width: 7px;
   height: 7px;
-  background-color: var(--success);
-  border-radius: 9999px;
-  box-shadow: 0 0 0 2px rgba(17, 24, 39, 1);
+  background: var(--success);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 2px white,
+    0 0 12px rgba(22, 163, 74, 0.45);
+  transform: translateX(-50%);
 }
 
-/* Dot color when selected */
 .react-calendar__tile--active.highlighted-date::after {
-  background-color: #111827;
+  background: #111827;
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.8);
 }
 
-/* Past dates */
 .past-date {
-  opacity: 0.55;
+  opacity: 0.45;
   filter: grayscale(0.15);
 }
 
-.past-date:enabled:hover {
-  background-color: rgba(75, 85, 99, 0.35);
-  transform: scale(1.02);
-}
-
-/* Mobile calendar tweaks */
-@media (max-width: 640px) {
-  .react-calendar__tile {
-    font-size: 0.92rem;
-    border-radius: 14px;
-  }
-
-  .react-calendar__navigation__label {
-    font-size: 0.98rem;
-  }
-}
-
-/* =========================
-   LOGIN
-========================= */
-.login-shell {
-  min-height: 100vh;
-  background:
-    radial-gradient(900px 500px at 50% 30%, rgba(37, 99, 235, 0.22), transparent),
-    radial-gradient(700px 400px at 30% 80%, rgba(250, 204, 21, 0.12), transparent),
-    var(--bg);
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 18px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  background: rgba(17, 24, 39, 0.88);
-  border: 1px solid rgba(55, 65, 81, 1);
-  border-radius: 22px;
-  padding: 22px;
-  box-shadow: var(--shadow);
-}
-
-.login-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.login-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  background: rgba(250, 204, 21, 0.12);
-  border: 1px solid rgba(250, 204, 21, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  color: var(--primary);
-}
-
-.login-title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 900;
-}
-
-.login-sub {
-  margin: 3px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.field {
-  display: block;
-  margin-bottom: 12px;
-}
-
-.field-label {
-  display: block;
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.field-control {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.field-icon {
-  position: absolute;
-  left: 12px;
-  opacity: 0.9;
-}
-
-.field-btn {
-  position: absolute;
-  right: 10px;
-  background: transparent;
-  border: 1px solid rgba(55, 65, 81, 1);
-  color: var(--text);
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-weight: 900;
-  cursor: pointer;
-  min-height: 36px;
-}
-
-.field-btn:hover {
-  background: rgba(31, 41, 55, 1);
-}
-
-.login-input {
-  width: 100%;
-  background-color: #111827;
-  color: #f9fafb;
-  border: 1px solid #374151;
-  border-radius: 14px;
-  padding: 12px 14px 12px 40px;
-  font-size: 16px;
-  /* prevents iOS zoom */
-  outline: none;
-}
-
-.login-input::placeholder {
-  color: #9ca3af;
-}
-
-.login-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.22);
-}
-
-/* Autofill fix (Chrome) */
-.login-input:-webkit-autofill {
-  -webkit-text-fill-color: #f9fafb !important;
-  box-shadow: 0 0 0px 1000px #111827 inset !important;
-  transition: background-color 9999s ease-in-out 0s;
-}
-
-.login-foot {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 12px;
-  text-align: center;
-}
-
-/* =========================
-   MODAL (EditModal)
-========================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  z-index: 999;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(8px);
 }
 
 .modal-card {
   width: 100%;
-  max-width: 520px;
-  background: rgba(17, 24, 39, 0.95);
-  border: 1px solid rgba(55, 65, 81, 1);
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
-  color: #e5e7eb;
-}
-
-.modal-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  max-width: 540px;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.25);
+  color: var(--text);
 }
 
 .modal-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 900;
-}
-
-.modal-sub {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: #9ca3af;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.modal-strong {
-  color: #e5e7eb;
-  font-weight: 800;
-}
-
-.modal-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  border: 1px solid rgba(55, 65, 81, 1);
-}
-
-.modal-badge.ok {
-  background: rgba(34, 197, 94, 0.14);
-  border-color: rgba(34, 197, 94, 0.35);
-  color: #bbf7d0;
-}
-
-.modal-badge.danger {
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(239, 68, 68, 0.35);
-  color: #fecaca;
-}
-
-.icon-btn {
-  background: rgba(31, 41, 55, 1);
-  border: 1px solid rgba(55, 65, 81, 1);
-  color: #e5e7eb;
-  border-radius: 12px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  font-weight: 900;
-}
-
-.icon-btn:hover {
-  background: rgba(55, 65, 81, 1);
-}
-
-.modal-alert {
-  margin: 10px 0 12px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fecaca;
-  font-weight: 800;
-  font-size: 13px;
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 950;
 }
 
 .modal-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 @media (min-width: 560px) {
@@ -786,79 +438,438 @@
   }
 }
 
-.modal-field {
-  display: block;
-}
-
 .modal-label {
   display: block;
-  font-size: 12px;
-  color: #9ca3af;
-  font-weight: 900;
   margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
 }
 
 .modal-input {
   width: 100%;
-  background: #111827;
-  color: #f9fafb;
-  border: 1px solid #374151;
+  padding: 12px;
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 12px 12px;
   font-size: 16px;
-  /* prevents iOS zoom */
   outline: none;
-}
-
-.modal-input::placeholder {
-  color: #9ca3af;
 }
 
 .modal-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
-}
-
-.modal-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
 }
 
 .modal-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
-.modal-btn {
-  border: none;
+/* Login */
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background:
+    radial-gradient(
+      900px 500px at 50% 20%,
+      rgba(37, 99, 235, 0.12),
+      transparent
+    ),
+    radial-gradient(
+      700px 400px at 80% 80%,
+      rgba(245, 158, 11, 0.16),
+      transparent
+    ),
+    var(--bg);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 26px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  box-shadow: var(--shadow);
+}
+
+.login-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.login-sub {
+  margin: 4px 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 12px 12px;
+  font-size: 16px;
+  outline: none;
+}
+
+.login-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
+}
+
+/* Mobile / iPad polish */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 16px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .app-title {
+    font-size: 30px;
+  }
+
+  .card,
+  .react-calendar,
+  .modal-card {
+    border-radius: 22px;
+  }
+
+  .card-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .res-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .res-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-container {
+    padding: 12px;
+  }
+
+  .app-title {
+    font-size: 26px;
+  }
+
+  .react-calendar {
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .react-calendar__tile {
+    min-height: 44px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+  }
+
+  .res-row {
+    padding: 12px;
+  }
+}
+/* Reservation form */
+.reservation-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.form-title {
+  margin: 0;
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.form-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 760px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+}
+
+.form-label {
+  color: var(--muted);
+  font-size: 13px;
   font-weight: 900;
+}
+
+.form-input {
+  width: 100%;
+  background: #ffffff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
+}
+
+.input-error {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.form-alert {
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 850;
+  font-size: 14px;
+}
+
+.form-alert-error {
+  background: var(--danger-soft);
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.form-alert-success {
+  background: var(--success-soft);
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.form-save-btn {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  font-weight: 950;
   cursor: pointer;
-  min-height: var(--tap);
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.2);
 }
 
-.modal-btn.secondary {
-  background: rgba(31, 41, 55, 1);
-  border: 1px solid rgba(55, 65, 81, 1);
-  color: #e5e7eb;
+.form-save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(22, 163, 74, 0.24);
 }
 
-.modal-btn.primary {
-  background: var(--primary);
-  color: #0b1220;
+.form-save-btn:active {
+  transform: scale(0.99);
 }
 
-.modal-btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+.confirm-card {
+  max-width: 420px;
 }
 
-.modal-note {
-  margin: 12px 0 0;
-  font-size: 12px;
-  color: #9ca3af;
+.confirm-message {
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0 0 18px;
+}
+
+.modal-btn.danger {
+  background: var(--danger);
+  color: white;
+}
+
+/* Hiro loading screen */
+/* Hiro loading screen */
+.loading-screen {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      800px 420px at 50% 28%,
+      rgba(245, 158, 11, 0.18),
+      transparent
+    ),
+    radial-gradient(
+      900px 520px at 50% 85%,
+      rgba(37, 99, 235, 0.12),
+      transparent
+    ),
+    linear-gradient(180deg, #ffffff 0%, #eef4ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.loading-card {
+  width: min(420px, 90vw);
+  padding: 34px 26px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(14px);
+  display: grid;
+  place-items: center;
   text-align: center;
+  animation: loading-pop 0.45s ease both;
+}
+
+.loading-clock {
+  position: relative;
+  width: 126px;
+  height: 126px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+}
+
+.loading-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    #f59e0b,
+    #facc15,
+    #22c55e,
+    #2563eb,
+    #f59e0b
+  );
+  animation: hiro-spin 1s linear infinite;
+}
+
+.loading-clock::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 999px;
+  background: white;
+  box-shadow: inset 0 0 0 1px #e2e8f0;
+  z-index: 1;
+}
+
+.loading-logo {
+  position: relative;
+  z-index: 2;
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #facc15;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  font-weight: 950;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.22);
+}
+
+.loading-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.loading-text {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #f59e0b;
+  animation: loading-bounce 0.9s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+  background: #22c55e;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+  background: #2563eb;
+}
+
+@keyframes hiro-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loading-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+
+  40% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+@keyframes loading-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

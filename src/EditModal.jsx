@@ -56,6 +56,7 @@ const EditModal = ({ reservation, close, refresh, updateReservationLocal }) => {
       await refresh();
     }
   };
+
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") close();
@@ -91,61 +92,65 @@ const EditModal = ({ reservation, close, refresh, updateReservationLocal }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-      <div className="bg-gray-800 text-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h3 className="text-xl font-semibold mb-4">Edit Reservation</h3>
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <h3 className="modal-title">Edit Reservation</h3>
 
-        <label className="block text-sm mb-1">Name</label>
-        <input
-          className="bg-gray-700 text-white border border-gray-600 p-2 w-full mb-3 rounded"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <div className="modal-grid">
+          <label>
+            <span className="modal-label">Name</span>
+            <input
+              className="modal-input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </label>
 
-        <label className="block text-sm mb-1">Phone</label>
-        <input
-          className="bg-gray-700 text-white border border-gray-600 p-2 w-full mb-3 rounded"
-          value={phone}
-          onChange={handlePhoneChange}
-          placeholder="+1 720-123-4567"
-        />
+          <label>
+            <span className="modal-label">Phone</span>
+            <input
+              className="modal-input"
+              value={phone}
+              onChange={handlePhoneChange}
+              placeholder="+1 720-123-4567"
+            />
+          </label>
 
-        <label className="block text-sm mb-1">Party Size</label>
-        <input
-          className="bg-gray-700 text-white border border-gray-600 p-2 w-full mb-3 rounded"
-          type="number"
-          min={1}
-          value={size}
-          onChange={(e) => setSize(e.target.value)}
-        />
+          <label>
+            <span className="modal-label">Party Size</span>
+            <input
+              className="modal-input"
+              type="number"
+              min={1}
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+            />
+          </label>
 
-        <label className="block text-sm mb-1">Time</label>
-        <select
-          className="bg-gray-700 text-white border border-gray-600 p-2 w-full mb-5 rounded"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-        >
-          <option value="">Select a time</option>
-          {timeSlots.map((slot) => (
-            <option key={slot} value={slot}>
-              {slot}
-            </option>
-          ))}
-        </select>
+          <label>
+            <span className="modal-label">Time</span>
+            <select
+              className="modal-input"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            >
+              <option value="">Select a time</option>
+              {timeSlots.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
-        <div className="flex justify-end gap-2">
-          <button
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-            onClick={close}
-          >
+        <div className="modal-actions">
+          <button className="modal-btn secondary" onClick={close}>
             Cancel
           </button>
 
-          <button
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-            onClick={handleSave}
-          >
-            Save
+          <button className="modal-btn primary" onClick={handleSave}>
+            Save Changes
           </button>
         </div>
       </div>

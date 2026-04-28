@@ -4,11 +4,14 @@ import Calendar from "react-calendar";
 import ReservationForm from "./ReservationForm";
 import EditModal from "./EditModal";
 import ConfirmModal from "./ConfirmModal";
+import LoadingScreen from "./LoadingScreen";
+
 import {
   getReservations,
   deleteReservation as deleteReservationFromSheet,
 } from "./googleSheetsApi";
 import "react-calendar/dist/Calendar.css";
+import "./App.css";
 import "./calendar.css";
 
 function App() {
@@ -18,14 +21,11 @@ function App() {
   const [editRes, setEditRes] = useState(null);
   const [deleteResId, setDeleteResId] = useState(null);
   const [highlightedDates, setHighlightedDates] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const formatDateLocal = (date) => {
-    return date.toLocaleDateString("en-CA");
-  };
+  const formatDateLocal = (date) => date.toLocaleDateString("en-CA");
 
-  const normalizeDate = (dateValue) => {
-    return String(dateValue || "").split("T")[0];
-  };
+  const normalizeDate = (dateValue) => String(dateValue || "").split("T")[0];
 
   const formatTime = (timeValue) => {
     if (!timeValue) return "";
@@ -45,22 +45,47 @@ function App() {
     return raw;
   };
 
-  const rebuildHighlightedDates = (data) => {
-    return [...new Set(data.map((r) => normalizeDate(r.date)).filter(Boolean))];
+  const formatPhone = (phoneValue) => {
+    const digits = String(phoneValue || "").replace(/\D/g, "");
+    let tenDigits = digits;
+
+    if (digits.length === 11 && digits.startsWith("1")) {
+      tenDigits = digits.slice(1);
+    }
+
+    if (tenDigits.length === 10) {
+      return `+1 ${tenDigits.slice(0, 3)}-${tenDigits.slice(
+        3,
+        6,
+      )}-${tenDigits.slice(6)}`;
+    }
+
+    return phoneValue || "";
   };
 
+  const rebuildHighlightedDates = (data) => [
+    ...new Set(data.map((r) => normalizeDate(r.date)).filter(Boolean)),
+  ];
+
   const loadAllData = async () => {
+    setLoading(true);
+
     const data = await getReservations();
+
     setAllReservations(data);
     setHighlightedDates(rebuildHighlightedDates(data));
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 100); 
   };
 
   const filterReservationsForSelectedDate = () => {
     const selectedIso = formatDateLocal(selectedDate);
 
-    const filtered = allReservations.filter((r) => {
-      return normalizeDate(r.date) === selectedIso;
-    });
+    const filtered = allReservations.filter(
+      (r) => normalizeDate(r.date) === selectedIso,
+    );
 
     setReservations(filtered);
   };
@@ -80,12 +105,7 @@ function App() {
   const updateReservationLocal = (updatedReservation) => {
     setAllReservations((prev) =>
       prev.map((r) =>
-        r.id === updatedReservation.id
-          ? {
-              ...r,
-              ...updatedReservation,
-            }
-          : r,
+        r.id === updatedReservation.id ? { ...r, ...updatedReservation } : r,
       ),
     );
   };
@@ -133,6 +153,9 @@ function App() {
     (sum, r) => sum + Number(r.size || 0),
     0,
   );
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   const isPastDate = (date) => {
     const today = new Date();
@@ -145,122 +168,134 @@ function App() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto font-sans text-gray-200 bg-gray-900 min-h-screen">
-      <h1 className="text-4xl font-bold mb-6 text-white">
-        Hiro Staff Reservation
-      </h1>
+    <main className="app-shell">
+      <div className="app-container">
+        <header className="app-header">
+          <div>
+            <h1 className="app-title">Hiro Staff Reservation</h1>
+            <p className="app-subtitle">
+              View, add, edit, and manage reservations.
+            </p>
+          </div>
+        </header>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="bg-gray-800 p-4 rounded-xl shadow-lg w-full md:w-1/2">
-          <Calendar
-            onChange={(date) => setSelectedDate(date)}
-            value={selectedDate}
-            tileClassName={({ date, view }) => {
-              const iso = formatDateLocal(date);
+        <section className="grid-2">
+          <div className="card">
+            <Calendar
+              onChange={(date) => setSelectedDate(date)}
+              value={selectedDate}
+              tileClassName={({ date, view }) => {
+                const iso = formatDateLocal(date);
 
-              if (view === "month") {
-                if (highlightedDates.includes(iso)) {
-                  return isPastDate(date)
-                    ? "highlighted-date past-date"
-                    : "highlighted-date";
+                if (view === "month") {
+                  if (highlightedDates.includes(iso)) {
+                    return isPastDate(date)
+                      ? "highlighted-date past-date"
+                      : "highlighted-date";
+                  }
+
+                  if (isPastDate(date)) {
+                    return "past-date";
+                  }
                 }
 
-                if (isPastDate(date)) {
-                  return "past-date";
-                }
-              }
+                return null;
+              }}
+            />
+          </div>
 
-              return null;
-            }}
-          />
-        </div>
+          <div className="card card-scroll">
+            <h2 className="list-title">
+              Reservations for {selectedDate.toDateString()}
+            </h2>
+            <p className="list-meta">{totalSize} people total</p>
 
-        <div className="bg-gray-800 p-4 rounded-xl shadow-lg w-full md:w-1/2 overflow-y-auto max-h-[500px]">
-          <h2 className="text-xl font-semibold mb-4 text-white">
-            Reservations for {selectedDate.toDateString()} ({totalSize} people)
-          </h2>
+            {reservations.length === 0 ? (
+              <div className="empty-box">No reservations for this date.</div>
+            ) : (
+              <ul className="res-list">
+                {reservations.map((r) => {
+                  const isPast = isPastDate(normalizeDate(r.date));
 
-          <ul className="space-y-3">
-            {reservations.map((r) => {
-              const isPast = isPastDate(normalizeDate(r.date));
+                  return (
+                    <li key={r.id} className="res-row">
+                      <div className="res-left">
+                        <div className="res-main">
+                          <span className="res-name">{r.name}</span>
+                          <span className="pill">{r.size} ppl</span>
+                          {isPast && (
+                            <span className="badge badge-danger">Past</span>
+                          )}
+                        </div>
 
-              return (
-                <li
-                  key={r.id}
-                  className={`p-3 rounded shadow flex justify-between items-center ${
-                    isPast ? "bg-gray-600 opacity-60" : "bg-gray-700"
-                  }`}
-                >
-                  <div>
-                    <div className="font-semibold text-white">
-                      {r.name} ({r.size} ppl)
-                    </div>
+                        <div className="res-sub">
+                          <div>{formatPhone(r.phone)}</div>
+                          {r.time && (
+                            <div className="pill pill-time">
+                              {formatTime(r.time)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
 
-                    <div className="text-sm text-gray-400 flex flex-col">
-                      <span>{r.phone}</span>
+                      {!isPast && (
+                        <div className="res-actions">
+                          <button
+                            onClick={() => setEditRes(r)}
+                            className="btn btn-warn"
+                          >
+                            Edit
+                          </button>
 
-                      {r.time && (
-                        <span className="text-yellow-400 font-medium">
-                          {formatTime(r.time)}
-                        </span>
+                          <button
+                            onClick={() => setDeleteResId(r.id)}
+                            className="btn btn-danger"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       )}
-                    </div>
-                  </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </section>
 
-                  {!isPast && (
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => setEditRes(r)}
-                        className="bg-yellow-500 text-white px-2 py-1 rounded text-sm"
-                      >
-                        Edit
-                      </button>
+        <section className="card mt-16">
+          <ReservationForm
+            selectedDate={selectedDate}
+            refresh={refreshData}
+            addReservationLocal={addReservationLocal}
+          />
+        </section>
 
-                      <button
-                        onClick={() => setDeleteResId(r.id)}
-                        className="bg-red-600 text-white px-2 py-1 rounded text-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        {editRes && (
+          <EditModal
+            reservation={{
+              ...editRes,
+              date: normalizeDate(editRes.date),
+              time: formatTime(editRes.time),
+            }}
+            close={() => setEditRes(null)}
+            refresh={refreshData}
+            updateReservationLocal={updateReservationLocal}
+          />
+        )}
+
+        {deleteResId && (
+          <ConfirmModal
+            message="Are you sure you want to delete this reservation?"
+            onConfirm={() => deleteReservation(deleteResId)}
+            onCancel={() => setDeleteResId(null)}
+          />
+        )}
       </div>
-
-      <div className="mt-6 bg-gray-800 p-4 rounded-xl shadow-lg">
-        <ReservationForm
-          selectedDate={selectedDate}
-          refresh={refreshData}
-          addReservationLocal={addReservationLocal}
-        />
-      </div>
-
-      {editRes && (
-        <EditModal
-          reservation={{
-            ...editRes,
-            date: normalizeDate(editRes.date),
-            time: formatTime(editRes.time),
-          }}
-          close={() => setEditRes(null)}
-          refresh={refreshData}
-          updateReservationLocal={updateReservationLocal}
-        />
-      )}
-
-      {deleteResId && (
-        <ConfirmModal
-          message="Are you sure you want to delete this reservation?"
-          onConfirm={() => deleteReservation(deleteResId)}
-          onCancel={() => setDeleteResId(null)}
-        />
-      )}
-    </div>
+    </main>
   );
 }
 
 export default App;
+
+
