@@ -45,15 +45,14 @@ function App() {
     return raw;
   };
 
+  const rebuildHighlightedDates = (data) => {
+    return [...new Set(data.map((r) => normalizeDate(r.date)).filter(Boolean))];
+  };
+
   const loadAllData = async () => {
     const data = await getReservations();
     setAllReservations(data);
-
-    const uniqueDates = [
-      ...new Set(data.map((r) => normalizeDate(r.date)).filter(Boolean)),
-    ];
-
-    setHighlightedDates(uniqueDates);
+    setHighlightedDates(rebuildHighlightedDates(data));
   };
 
   const filterReservationsForSelectedDate = () => {
@@ -78,10 +77,56 @@ function App() {
     await loadAllData();
   };
 
+  const updateReservationLocal = (updatedReservation) => {
+    setAllReservations((prev) =>
+      prev.map((r) =>
+        r.id === updatedReservation.id
+          ? {
+              ...r,
+              ...updatedReservation,
+            }
+          : r,
+      ),
+    );
+  };
+
+  const addReservationLocal = (newReservation) => {
+    setAllReservations((prev) => {
+      const next = [...prev, newReservation];
+      setHighlightedDates(rebuildHighlightedDates(next));
+      return next;
+    });
+  };
+
+  const deleteReservationLocal = (id) => {
+    setAllReservations((prev) => {
+      const next = prev.filter((r) => r.id !== id);
+      setHighlightedDates(rebuildHighlightedDates(next));
+      return next;
+    });
+  };
+
   const deleteReservation = async (id) => {
-    await deleteReservationFromSheet(id);
-    await refreshData();
+    const oldReservations = allReservations;
+
+    deleteReservationLocal(id);
     setDeleteResId(null);
+
+    try {
+      const result = await deleteReservationFromSheet(id);
+
+      if (!result.success) {
+        alert("Google Sheets failed to delete. Restoring latest data.");
+        setAllReservations(oldReservations);
+        setHighlightedDates(rebuildHighlightedDates(oldReservations));
+        await refreshData();
+      }
+    } catch (error) {
+      alert("Google Sheets failed to delete. Restoring latest data.");
+      setAllReservations(oldReservations);
+      setHighlightedDates(rebuildHighlightedDates(oldReservations));
+      await refreshData();
+    }
   };
 
   const totalSize = reservations.reduce(
@@ -187,7 +232,11 @@ function App() {
       </div>
 
       <div className="mt-6 bg-gray-800 p-4 rounded-xl shadow-lg">
-        <ReservationForm selectedDate={selectedDate} refresh={refreshData} />
+        <ReservationForm
+          selectedDate={selectedDate}
+          refresh={refreshData}
+          addReservationLocal={addReservationLocal}
+        />
       </div>
 
       {editRes && (
@@ -199,6 +248,7 @@ function App() {
           }}
           close={() => setEditRes(null)}
           refresh={refreshData}
+          updateReservationLocal={updateReservationLocal}
         />
       )}
 

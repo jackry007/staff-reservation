@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { updateReservation } from "./googleSheetsApi";
 
-const EditModal = ({ reservation, close, refresh }) => {
+const EditModal = ({ reservation, close, refresh, updateReservationLocal }) => {
   const formatPhoneInput = (value) => {
     let digits = String(value || "").replace(/\D/g, "");
 
@@ -29,27 +29,33 @@ const EditModal = ({ reservation, close, refresh }) => {
   };
 
   const handleSave = async () => {
+    const updatedReservation = {
+      ...reservation,
+      name,
+      phone: String(phone),
+      size: Number(size),
+      time,
+      date: reservation.date,
+    };
+
+    updateReservationLocal(updatedReservation);
+    close();
+
     try {
-      const result = await updateReservation(reservation.id, {
-        name,
-        phone: String(phone),
-        size: Number(size),
-        time,
-        date: reservation.date,
-      });
+      const result = await updateReservation(
+        reservation.id,
+        updatedReservation,
+      );
 
       if (!result.success) {
-        alert("Failed to update reservation.");
-        return;
+        alert("Google Sheets failed to save. Refreshing latest data.");
+        await refresh();
       }
-
-      await refresh();
-      close();
     } catch (error) {
-      alert("Failed to update reservation.");
+      alert("Google Sheets failed to save. Refreshing latest data.");
+      await refresh();
     }
   };
-
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") close();

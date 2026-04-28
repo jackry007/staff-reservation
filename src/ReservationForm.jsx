@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createReservation } from "./googleSheetsApi";
 
-const ReservationForm = ({ selectedDate, refresh }) => {
+const ReservationForm = ({ selectedDate, refresh, addReservationLocal }) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+1 ");
   const [size, setSize] = useState("");
@@ -71,30 +71,36 @@ const ReservationForm = ({ selectedDate, refresh }) => {
       return;
     }
 
+    const newReservation = {
+      id: crypto.randomUUID(),
+      created_at: new Date().toISOString(),
+      name,
+      phone: String(phone),
+      size: Number(size),
+      time,
+      date: formatDateLocal(selectedDate),
+    };
+
+    addReservationLocal(newReservation);
+
+    setName("");
+    setPhone("+1 ");
+    setSize("");
+    setTime("");
+    setErrors({});
+    setSuccess("✅ Reservation saved!");
+    setTimeout(() => setSuccess(""), 3000);
+
     try {
-      const result = await createReservation({
-        name,
-        phone,
-        size: Number(size),
-        time,
-        date: formatDateLocal(selectedDate),
-      });
+      const result = await createReservation(newReservation);
 
       if (!result.success) {
-        setError("Failed to save reservation.");
-        return;
+        setError("Google Sheets failed to save. Refreshing latest data.");
+        await refresh();
       }
-
-      setName("");
-      setPhone("+1 ");
-      setSize("");
-      setTime("");
-      setErrors({});
-      setSuccess("✅ Reservation saved!");
-      refresh();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      setError("Failed to save reservation.");
+      setError("Google Sheets failed to save. Refreshing latest data.");
+      await refresh();
     }
   };
 
